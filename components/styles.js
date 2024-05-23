@@ -122,7 +122,7 @@ export const RightIcon = styled(TouchableOpacity)`
 `;
 
 export const StyledButton = styled(TouchableOpacity)`
-  padding:15px;
+  padding: 15px;
   background-color: ${brand};
   justify-content: center;
   align-items: center;
@@ -133,7 +133,6 @@ export const StyledButton = styled(TouchableOpacity)`
 
   ${(props)=> props.google == true &&`
     background-color: ${green};
-    
   `}
 `;
 
@@ -143,7 +142,8 @@ export const ButtonText = styled(Text)`
   padding-left: 10px;
 
     ${(props)=> props.google == true &&`
-        padding: 25px;
+      padding-left: 10px;
+      padding-right: 10px;
     `}
 `;
 
