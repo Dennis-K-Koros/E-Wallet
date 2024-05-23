@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 
 //formik
@@ -43,24 +44,25 @@ const Login = ({navigation}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
-    const handleLogin = (credentials) => {
-        const url = 'https://login-server-irjo.onrender.com/user/signin'
+    const handleLogin = (credentials, setSubmitting) => {
+        handleMessage(null);
+        const url = 'https://mywallet-server-rwwk.onrender.com/user/signin';
 
-        axios
-        .post(url,credentials)
+        axios.post(url,credentials)
         .then((response) => {
             const result = response.data;
             const {message, status, data} = result;
             
-            if (status !== 'SUCCESS'){
+            if (status !== 'SUCCESFUL'){
                 handleMessage(message, status);
             }else{
                 navigation.navigate('Welcome', {...data[0]}); 
             }
-            
+            setSubmitting(false);
         })
         .catch(error => {
-            console.log (error.JSON());
+            console.log (error.response);
+            setSubmitting(false);
             handleMessage("An error occurred. Please Check your Network and try again");
         })
     }
@@ -80,10 +82,12 @@ const Login = ({navigation}) => {
                 <SubTitle>Account Login</SubTitle>
                 <Formik 
                   initialValues={{email: '',password: ''}}
-                  onSubmit = {(values, {SetSubmitting})=>{
+                  onSubmit = {(values, {setSubmitting})=>{
                     if(values.email == '' || values.password == ''){
                         handleMessage('Please fill all the Fields');
-                        SetSubmitting(false);
+                        setSubmitting(false);
+                    } else {
+                        handleLogin(values, setSubmitting);
                     }
                   }}
                 >{({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => <StyledFormArea>
@@ -92,7 +96,7 @@ const Login = ({navigation}) => {
                           icon = "mail"
                           placeholder = "123@gmail.com"
                           placeholderTextColor = {darklight}
-                          onChangetext={handleChange('email')}
+                          onChangeText={handleChange('email')}
                           onBlur={handleBlur('email')}
                           values = {values.email}
                           keyboardType="email-address"
@@ -102,7 +106,7 @@ const Login = ({navigation}) => {
                           icon = "lock"
                           placeholder = "* * * * * * * *"
                           placeholderTextColor = {darklight}
-                          onChangetext={handleChange('password')}
+                          onChangeText={handleChange('password')}
                           onBlur={handleBlur('password')}
                           values = {values.password}
                           secureTextEntry = {hidePassword}

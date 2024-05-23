@@ -18,7 +18,8 @@ import{
 
 
 
-const Welcome = ({navigation}) => {
+const Welcome = ({navigation, route}) => {
+    const {name, email} = route.params;
     
     return (
         <>
@@ -26,9 +27,9 @@ const Welcome = ({navigation}) => {
             <InnerContainer>
                 <WelcomeImage resizeMode = "cover" source={require('./../assets/img/img3.jpg')}/>
                 <WelcomeContainer>
-                    <PageTitle welcome={true} >Welcome Buddy</PageTitle>
-                    <SubTitle welcome={true} >John Doe</SubTitle>
-                    <SubTitle welcome={true} >johndoe@gmail.com</SubTitle>
+                    <PageTitle welcome={true} >Welcome! Buddy</PageTitle>
+                    <SubTitle welcome={true} >{name ||'John Doe'}</SubTitle>
+                    <SubTitle welcome={true} >{email ||'johndoe@gmail.com'}</SubTitle>
                     <StyledFormArea>
                     <Avatar resizeMode = "cover" source={require('./../assets/img/img1.png')}/>
                     <Line/>
