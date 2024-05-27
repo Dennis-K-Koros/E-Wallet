@@ -11,10 +11,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "E-Wallet",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.EWallet"
     },
     "android": {
+      "package": "com.example.EWallet",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -22,6 +25,14 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "googleClientId":"871962684885-j2mu50l3oga75tiuaevlsblkcsb6l619.apps.googleusercontent.com",
+      "googleClientIdAndroid": "871962684885-q2phdb2be49e767r7sdmbaft3vh0mttb.apps.googleusercontent.com",
+      "googleClientIdIOS": "871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds.apps.googleusercontent.com",
+      "eas": {
+        "projectId": "6ed4bf8f-85fe-4396-9453-ff3497a746c0"
+      }
     }
   }
 }

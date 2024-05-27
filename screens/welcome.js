@@ -19,8 +19,8 @@ import{
 
 
 const Welcome = ({navigation, route}) => {
-    const {name, email} = route.params;
-    
+    const {name, email, picture} = route.params;
+    const AvatarImg = picture ? picture : require('./../assets/img/img1.png');
     return (
         <>
             <StatusBar style='dark'/>
@@ -31,7 +31,7 @@ const Welcome = ({navigation, route}) => {
                     <SubTitle welcome={true} >{name ||'John Doe'}</SubTitle>
                     <SubTitle welcome={true} >{email ||'johndoe@gmail.com'}</SubTitle>
                     <StyledFormArea>
-                    <Avatar resizeMode = "cover" source={require('./../assets/img/img1.png')}/>
+                    <Avatar resizeMode = "cover" source={AvatarImg}/>
                     <Line/>
                        <StyledButton onPress={() => navigation.navigate("Login")}>
                             <ButtonText >
