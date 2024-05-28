@@ -1,50 +1,62 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 
+import {
+  InnerContainer,
+  PageTitle,
+  SubTitle,
+  StyledFormArea,
+  StyledButton,
+  ButtonText,
+  Line,
+  WelcomeImage,
+  WelcomeContainer,
+  Avatar
+} from './../components/styles';
 
+//async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import{
-    InnerContainer,
-    PageTitle,
-    SubTitle,
-    StyledFormArea,
-    StyledButton,
-    ButtonText,
-    Line,
-    WelcomeImage,
-    WelcomeContainer,
-    Avatar
-}from './../components/styles';
+//credentials context
+import { credentialsContext } from './../components/CredentialsContext';
 
+const Welcome = () => {
+  //context
+  const { storedCredentials, setStoredCredentials } = useContext(credentialsContext);
 
+  // Add a check for storedCredentials
+  const { name, email, picture } = storedCredentials || { name: 'John Doe', email: 'johndoe@gmail.com', picture: null };
+  const AvatarImg = picture ? { uri: picture } : require('./../assets/img/img1.png');
 
-const Welcome = ({navigation, route}) => {
-    const {name, email, picture} = route.params;
-    const AvatarImg = picture ? picture : require('./../assets/img/img1.png');
-    return (
-        <>
-            <StatusBar style='dark'/>
-            <InnerContainer>
-                <WelcomeImage resizeMode = "cover" source={require('./../assets/img/img3.jpg')}/>
-                <WelcomeContainer>
-                    <PageTitle welcome={true} >Welcome! Buddy</PageTitle>
-                    <SubTitle welcome={true} >{name ||'John Doe'}</SubTitle>
-                    <SubTitle welcome={true} >{email ||'johndoe@gmail.com'}</SubTitle>
-                    <StyledFormArea>
-                    <Avatar resizeMode = "cover" source={AvatarImg}/>
-                    <Line/>
-                       <StyledButton onPress={() => navigation.navigate("Login")}>
-                            <ButtonText >
-                                Log Out 
-                            </ButtonText>
-                       </StyledButton>
-                       
-                    </StyledFormArea>   
-                </WelcomeContainer>
-            </InnerContainer>
-        </>
-    );
-}
+  const clearLogin = async () => {
+    try {
+      await AsyncStorage.removeItem('myWalletCrendentials');
+      setStoredCredentials(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
+  return (
+    <>
+      <StatusBar style='dark' />
+      <InnerContainer>
+        <WelcomeImage resizeMode="cover" source={require('./../assets/img/img3.jpg')} />
+        <WelcomeContainer>
+          <PageTitle welcome={true}>Welcome! Buddy</PageTitle>
+          <SubTitle welcome={true}>{name}</SubTitle>
+          <SubTitle welcome={true}>{email}</SubTitle>
+          <StyledFormArea>
+            <Avatar resizeMode="cover" source={AvatarImg} />
+            <Line />
+            <StyledButton onPress={clearLogin}>
+              <ButtonText>Log Out</ButtonText>
+            </StyledButton>
+          </StyledFormArea>
+        </WelcomeContainer>
+      </InnerContainer>
+    </>
+  );
+};
 
 export default Welcome;

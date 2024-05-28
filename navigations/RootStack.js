@@ -1,42 +1,51 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
 import { Colors } from '../components/styles';
-const {primary, tertiary} = Colors;
+const { primary, tertiary } = Colors;
 
 // React Navigation
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-//screens
+// Screens
 import Login from './../screens/login';
 import Signup from './../screens/signup';
 import Welcome from './../screens/welcome';
 
+// Credentials context
+import { credentialsContext } from './../components/CredentialsContext';
+
 const Stack = createNativeStackNavigator();
 
 const RootStack = () => {
-    return(
-        <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerStyle: {
-                    backgroundColor: 'transparent'
-                },
-                headerTintColor: tertiary,
-                headerTransparent: true,
-                headerTitle: "",
-                headerLeftContainerStyle:{
-                    paddingLeft: 20
-                },
-              }}
-              initialRouteName='Login'
-            >
-                <Stack.Screen name='Login' component={Login}/>
-                <Stack.Screen name='Signup' component={Signup}/>
-                <Stack.Screen name='Welcome' component={Welcome}/>
-            </Stack.Navigator>
-        </NavigationContainer>
-    );
-}
+  const { storedCredentials } = useContext(credentialsContext);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: "",
+          headerLeftContainerStyle: {
+            paddingLeft: 20,
+          },
+        }}
+        initialRouteName="Login"
+      >
+        {storedCredentials ? (
+          <Stack.Screen name="Welcome" component={Welcome} />
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Signup" component={Signup} />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
 export default RootStack;

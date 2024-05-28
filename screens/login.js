@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
@@ -29,6 +29,13 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
+//async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { credentialsContext } from './../components/CredentialsContext';
+
+
 WebBrowser.maybeCompleteAuthSession();
 
 const { brand, darklight, primary } = Colors;
@@ -39,12 +46,14 @@ const Login = ({ navigation }) => {
   const [messageType, setMessageType] = useState();
   const [googleSubmitting, setGoogleSubmitting] = useState(false);
 
+  //context
+  const {storedCredentials, setStoredCredentials} = useContext(credentialsContext);
   
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    ClientId: Constants.manifest.extra.googleClientId,
-    androidClientId: Constants.manifest.extra.googleClientIdAndroid,
-    iosClientId: Constants.manifest.extra.googleClientIdIOS,
+    ClientId:'871962684885-j2mu50l3oga75tiuaevlsblkcsb6l619.apps.googleusercontent.com',
+    androidClientId:'871962684885-q2phdb2be49e767r7sdmbaft3vh0mttb.apps.googleusercontent.com',
+    iosClientId:'871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds.apps.googleusercontent.com',
     useProxy: false,
   });
 
@@ -64,8 +73,7 @@ const Login = ({ navigation }) => {
       });
       const user = await response.json();
       const { email, name, picture } = user;
-      handleMessage('Google SignIn Successful', 'SUCCESSFUL');
-      setTimeout(() => navigation.navigate('Welcome', { email, name, picture }), 1000);
+      persistLogin({ email, name, picture }, message, "SUCCESS");
     } catch (error) {
       handleMessage('An error occurred. Check your network and try again');
       console.log(error);
@@ -85,7 +93,7 @@ const Login = ({ navigation }) => {
         if (status !== 'SUCCESFUL') {
           handleMessage(message, status);
         } else {
-          navigation.navigate('Welcome', { ...data[0] });
+          persistLogin({ ...data[0] }, message, status);
         }
         setSubmitting(false);
       })
@@ -100,6 +108,18 @@ const Login = ({ navigation }) => {
     setMessage(message);
     setMessageType(type);
   };
+
+  const persistLogin = (credentials, message, status) => {
+    AsyncStorage.setItem('myWalletCrendentials',JSON.stringify(credentials))
+    .then(()=>{
+      handleMessage(message, status);
+      setStoredCredentials(credentials);
+    })
+    .catch((error) =>{
+      console.log(error);
+      handleMessage('Persisting login Failed');
+    })
+  }
 
   return (
     <KeyboardAvoidingWrapper>

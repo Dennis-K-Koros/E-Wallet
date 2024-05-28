@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 
@@ -40,6 +40,13 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 // Keyboard avoiding wrapper
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
+//async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { credentialsContext } from './../components/CredentialsContext';
+
+
 const Signup = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [show, setShow] = useState(false);
@@ -50,6 +57,9 @@ const Signup = ({navigation}) => {
 
     //Actual date of birth to be sent
     const [dob, setDob] = useState();
+
+    //context
+    const {storedCredentials, setStoredCredentials} = useContext(credentialsContext);
 
     const onChange = (event, selectedDate)=>{
         const currentDate = selectedDate || date;
@@ -76,7 +86,7 @@ const Signup = ({navigation}) => {
             if (status !== 'SUCCESFUL'){
                 handleMessage(message, status);
             }else{
-                navigation.navigate('Welcome', {...data}); 
+                persistLogin({ ...data}, message, status); 
             }
             setSubmitting(false);
         })
@@ -90,6 +100,18 @@ const Signup = ({navigation}) => {
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
+    }
+
+    const persistLogin = (credentials, message, status) => {
+        AsyncStorage.setItem('myWalletCrendentials',JSON.stringify(credentials))
+        .then(()=>{
+          handleMessage(message, status);
+          setStoredCredentials(credentials);
+        })
+        .catch((error) =>{
+          console.log(error);
+          handleMessage('Persisting login Failed');
+        })
     }
     
     
