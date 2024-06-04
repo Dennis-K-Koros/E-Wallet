@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './../screens/login';
 import Signup from './../screens/signup';
 import Welcome from './../screens/welcome';
+import Verification from '../screens/LinkVerification';
 
 // Credentials context
 import { credentialsContext } from './../components/CredentialsContext';
@@ -41,6 +42,7 @@ const RootStack = () => {
           <>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Signup" component={Signup} />
+            <Stack.Screen name="Verification" component={Verification}/>
           </>
         )}
       </Stack.Navigator>

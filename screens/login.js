@@ -25,8 +25,8 @@ import {
   TextLinkContent
 } from './../components/styles';
 import { View, ActivityIndicator } from 'react-native';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
+// import * as Google from 'expo-auth-session/providers/google';
+// import * as WebBrowser from 'expo-web-browser';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 //async-storage
@@ -35,12 +35,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { credentialsContext } from './../components/CredentialsContext';
 
+//api route
+import { baseAPIUrl } from '../components/shared';
 
-WebBrowser.maybeCompleteAuthSession();
+
+// WebBrowser.maybeCompleteAuthSession();
 
 const { brand, darklight, primary } = Colors;
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
   const [hidePassword, setHidePassword] = useState(true);
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
@@ -50,40 +53,40 @@ const Login = ({ navigation }) => {
   const {storedCredentials, setStoredCredentials} = useContext(credentialsContext);
   
 
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    ClientId:'871962684885-j2mu50l3oga75tiuaevlsblkcsb6l619.apps.googleusercontent.com',
-    androidClientId:'871962684885-q2phdb2be49e767r7sdmbaft3vh0mttb.apps.googleusercontent.com',
-    iosClientId:'871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds.apps.googleusercontent.com',
-    useProxy: false,
-  });
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   ClientId:'871962684885-j2mu50l3oga75tiuaevlsblkcsb6l619.apps.googleusercontent.com',
+  //   androidClientId:'871962684885-q2phdb2be49e767r7sdmbaft3vh0mttb.apps.googleusercontent.com',
+  //   iosClientId:'871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds.apps.googleusercontent.com',
+  //   useProxy: true,
+  // });
 
-  useEffect(() => {
-    if (response?.type === "success") {
-      const { authentication } = response;
-      const { accessToken } = authentication;
-      fetchUserInfo(accessToken);
-    }
-  }, [response]);
+  // useEffect(() => {
+  //   if (response?.type === "success") {
+  //     const { authentication } = response;
+  //     const { accessToken } = authentication;
+  //     fetchUserInfo(accessToken);
+  //   }
+  // }, [response]);
 
-  const fetchUserInfo = async (token) => {
-    setGoogleSubmitting(true);
-    try {
-      const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const user = await response.json();
-      const { email, name, picture } = user;
-      persistLogin({ email, name, picture }, message, "SUCCESS");
-    } catch (error) {
-      handleMessage('An error occurred. Check your network and try again');
-      console.log(error);
-    }
-    setGoogleSubmitting(false);
-  };
+  // const fetchUserInfo = async (token) => {
+  //   setGoogleSubmitting(true);
+  //   try {
+  //     const response = await fetch('https://www.googleapis.com/userinfo/v2/me', {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     const user = await response.json();
+  //     const { email, name, photoUrl } = user;
+  //     persistLogin({ email, name, photoUrl }, message, "SUCCESS");
+  //   } catch (error) {
+  //     handleMessage('An error occurred. Check your network and try again');
+  //     console.log(error);
+  //   }
+  //   setGoogleSubmitting(false);
+  // };
   
   const handleLogin = (credentials, setSubmitting) => {
     handleMessage(null);
-    const url = 'https://mywallet-server-rwwk.onrender.com/user/signin';
+    const url = `${baseAPIUrl}/user/signin`;
 
     axios.post(url, credentials)
       .then((response) => {
@@ -130,7 +133,8 @@ const Login = ({ navigation }) => {
           <PageTitle>My Wallet</PageTitle>
           <SubTitle>Account Login</SubTitle>
           <Formik
-            initialValues={{ email: '', password: '' }}
+            initialValues={{ email: route?.params?.email, password: '' }}
+            enableReinitialize={true}
             onSubmit={(values, { setSubmitting }) => {
               if (values.email == '' || values.password == '') {
                 handleMessage('Please fill all the fields');
@@ -177,7 +181,7 @@ const Login = ({ navigation }) => {
 
               <Line />
 
-              {!googleSubmitting && (
+              {/* {!googleSubmitting && (
                 <StyledButton google={true} onPress={() => promptAsync()}>
                   <Fontisto name="google" color={primary} size={25} />
                   <ButtonText google={true}>
@@ -190,7 +194,7 @@ const Login = ({ navigation }) => {
                 <StyledButton google={true} disabled={true}>
                   <ActivityIndicator size="large" color={primary} />
                 </StyledButton>
-              )}
+              )} */}
               <ExtraView>
                 <ExtraText>
                   Don't have an account already?

@@ -25,8 +25,11 @@ const Welcome = () => {
   const { storedCredentials, setStoredCredentials } = useContext(credentialsContext);
 
   // Add a check for storedCredentials
-  const { name, email, picture } = storedCredentials || { name: 'John Doe', email: 'johndoe@gmail.com', picture: null };
-  const AvatarImg = picture ? { uri: picture } : require('./../assets/img/img1.png');
+ let { name, email, photoUrl } = storedCredentials || { name: 'John Doe', email: 'johndoe@gmail.com', picture: null };
+  const AvatarImg = photoUrl ? { uri: photoUrl } : require('./../assets/img/img1.png');
+
+  // for google sign in
+  name = name ? name : displayName;
 
   const clearLogin = async () => {
     try {

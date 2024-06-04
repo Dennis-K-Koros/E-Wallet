@@ -46,6 +46,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { credentialsContext } from './../components/CredentialsContext';
 
+//api route
+import { baseAPIUrl } from '../components/shared';
+
 
 const Signup = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -76,27 +79,27 @@ const Signup = ({navigation}) => {
 
     const handleSignup = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = 'https://mywallet-server-rwwk.onrender.com/user/signup';
-
-        axios.post(url,credentials)
-        .then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-            
-            if (status !== 'SUCCESFUL'){
-                handleMessage(message, status);
-            }else{
-                persistLogin({ ...data}, message, status); 
-            }
-            setSubmitting(false);
-        })
-        .catch(error => {
-            console.log (error.response);
-            setSubmitting(false);
-            handleMessage("An error occurred. Please Check your Network and try again");
-        })
+        const url = `${baseAPIUrl}/user/signup`;
+    
+        axios.post(url, credentials)
+            .then((response) => {
+                const result = response.data;
+                const { message, status, data } = result;
+    
+                if (status !== 'PENDING') {
+                    handleMessage(message, status);
+                } else {
+                    navigation.navigate('Verification', { email: data.email, userId: data.userId }); // Pass parameters correctly
+                }
+                setSubmitting(false);
+            })
+            .catch(error => {
+                console.log(error.response);
+                setSubmitting(false);
+                handleMessage("An error occurred. Please check your network and try again.");
+            });
     }
-
+    
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);

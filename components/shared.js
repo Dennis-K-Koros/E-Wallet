@@ -1,0 +1,1 @@
+export const baseAPIUrl = 'https://mywallet-server-rwwk.onrender.com';

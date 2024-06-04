@@ -14,7 +14,12 @@
     "scheme": "E-Wallet",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.EWallet"
+      "bundleIdentifier": "com.example.EWallet",
+      "config":{
+        "googleSignIn": {
+          "reservedClientId":"com.googleusercontent.apps.871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds"
+        }
+      }
     },
     "android": {
       "package": "com.example.EWallet",
