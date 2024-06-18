@@ -113,16 +113,19 @@ const Login = ({ navigation, route }) => {
   };
 
   const persistLogin = (credentials, message, status) => {
-    AsyncStorage.setItem('myWalletCrendentials',JSON.stringify(credentials))
-    .then(()=>{
-      handleMessage(message, status);
-      setStoredCredentials(credentials);
-    })
-    .catch((error) =>{
-      console.log(error);
-      handleMessage('Persisting login Failed');
-    })
-  }
+    AsyncStorage.setItem('myWalletCredentials', JSON.stringify(credentials))
+      .then(() => {
+        // console.log('Stored Credentials after login:', credentials); // Debug log
+        handleMessage(message, status);
+        setStoredCredentials(credentials);
+      })
+      .catch((error) => {
+        console.log(error);
+        handleMessage('Persisting login failed');
+      });
+  };
+  
+  
 
   return (
     <KeyboardAvoidingWrapper>
