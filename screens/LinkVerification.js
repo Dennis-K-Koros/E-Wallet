@@ -92,7 +92,10 @@ const Verification = ({ navigation, route }) => {
                     <EmphasizeText>{email}</EmphasizeText>
                 </InfoText>
                 <StyledButton
-                    onPress={() => navigation.navigate('Login', { email: email })}
+                    onPress={() =>{
+                        navigation.navigate('BalanceInput', { userId: userId , email: email})
+                        console.log('Navigating to BalanceInput with params:', { userId, email });
+                    }}
                     style={{ backgroundColor: green, flexDirection: 'row' }}>
                     <ButtonText>Proceed</ButtonText>
                     <Ionicons name='arrow-forward-circle' size={25} color={primary} />

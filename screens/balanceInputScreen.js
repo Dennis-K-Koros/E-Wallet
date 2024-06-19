@@ -22,6 +22,7 @@ import {
 import { baseAPIUrl } from '../components/shared';
 
 import { ActivityIndicator } from 'react-native';
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 
 const { brand, primary, green } = Colors;
 
@@ -29,12 +30,13 @@ const BalanceInputScreen = ({ navigation, route }) => {
   const [message, setMessage] = useState();
   const [messageType, setMessageType] = useState();
 
-  const { userId } = route.params;
+  const { userId, email } = route.params;
 
   useEffect(() => {
-    // console.log('Route Params in BalanceInputScreen:', route.params); // Debug log
-    // console.log('User ID from route.params:', userId); // Debug log
-  }, [route.params, userId]);
+    console.log('Route Params in BalanceInputScreen:', route.params); // Debug log
+    console.log('User ID from route.params:', userId); // Debug log
+    console.log('Email from route.params:', email); // Debug log
+  }, [route.params, userId, email]);
 
   const handleMessage = (message, type = 'FAILED') => {
     setMessage(message);
@@ -54,65 +56,67 @@ const BalanceInputScreen = ({ navigation, route }) => {
           handleMessage(message, status);
         } else {
           console.log('Balance successfully submitted:', data);
-          // Optionally navigate to another screen on success
+          navigation.navigate('Login', { email: email });
         }
         setSubmitting(false);
       })
       .catch(error => {
-        // console.log(error.response ? error.response.data : error.message);  // Log error properly
+        console.log(error.response ? error.response.data : error.message);  // Log error properly
         setSubmitting(false);
         handleMessage('An error occurred. Please check your network and try again');
       });
   };
 
   return (
-    <StyledContainer style={{ alignItems: 'center' }}>
-      <TopHalf>
-        <IconBg>
-          <StatusBar style='dark' />
-          <Ionicons name='wallet-outline' size={125} color={brand} />
-        </IconBg>
-      </TopHalf>
-      <BottomHalf>
-        <PageTitle>Final Setup</PageTitle>
-        <SubTitle>Enter Your Wallet Balance</SubTitle>
-        <Formik
-          initialValues={{ balance: '', userId: userId }}
-          onSubmit={(values, { setSubmitting }) => {
-            if (values.balance === '') {
-              handleMessage('Please fill in the field');
-              setSubmitting(false);
-            } else {
-              handleBalanceInput(values, setSubmitting);
-            }
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
-            <StyledFormArea>
-              <StyledTextInput
-                placeholder="Current Balance"
-                value={values.balance}
-                onChangeText={handleChange('balance')}
-                onBlur={handleBlur('balance')}
-                keyboardType="numeric"
-              />
-              <MsgBox type={messageType}>{message}</MsgBox>
-              {!isSubmitting && (
-                <StyledButton onPress={handleSubmit}>
-                  <ButtonText>Submit</ButtonText>
-                  <Ionicons name='checkmark-done-circle' size={25} color={primary} />
-                </StyledButton>
-              )}
-              {isSubmitting && (
-                <StyledButton disabled={true}>
-                  <ActivityIndicator size="large" color={primary} />
-                </StyledButton>
-              )}
-            </StyledFormArea>
-          )}
-        </Formik>
-      </BottomHalf>
-    </StyledContainer>
+    <KeyboardAvoidingWrapper>
+      <StyledContainer style={{ alignItems: 'center' }}>
+        <TopHalf>
+          <IconBg>
+            <StatusBar style='dark' />
+            <Ionicons name='wallet-outline' size={125} color={brand} />
+          </IconBg>
+        </TopHalf>
+        <BottomHalf>
+          <PageTitle>Final Setup</PageTitle>
+          <SubTitle>Enter Your Wallet Balance</SubTitle>
+          <Formik
+            initialValues={{ balance: '', userId: userId }}
+            onSubmit={(values, { setSubmitting }) => {
+              if (values.balance === '') {
+                handleMessage('Please fill in the field');
+                setSubmitting(false);
+              } else {
+                handleBalanceInput(values, setSubmitting);
+              }
+            }}
+          >
+            {({ handleChange, handleBlur, handleSubmit, values, isSubmitting }) => (
+              <StyledFormArea>
+                <StyledTextInput
+                  placeholder="Current Balance"
+                  value={values.balance}
+                  onChangeText={handleChange('balance')}
+                  onBlur={handleBlur('balance')}
+                  keyboardType="numeric"
+                />
+                <MsgBox type={messageType}>{message}</MsgBox>
+                {!isSubmitting && (
+                  <StyledButton onPress={handleSubmit}>
+                    <ButtonText>Submit</ButtonText>
+                    <Ionicons name='checkmark-done-circle' size={25} color={primary} />
+                  </StyledButton>
+                )}
+                {isSubmitting && (
+                  <StyledButton disabled={true}>
+                    <ActivityIndicator size="large" color={primary} />
+                  </StyledButton>
+                )}
+              </StyledFormArea>
+            )}
+          </Formik>
+        </BottomHalf>
+      </StyledContainer>
+    </KeyboardAvoidingWrapper>
   );
 };
 
