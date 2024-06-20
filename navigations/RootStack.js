@@ -10,8 +10,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './../screens/login';
 import Signup from './../screens/signup';
 import Welcome from './../screens/welcome';
-import Verification from '../screens/LinkVerification';
+import Verification from '../screens/OtpVerification';
 import BalanceInputScreen from '../screens/balanceInputScreen';
+import Dashboard from '../screens/dashboard';
+import TransactionScreen from '../screens/TransactionScreen';
 
 // Credentials context
 import { credentialsContext } from './../components/CredentialsContext';
@@ -38,7 +40,10 @@ return (
         initialRouteName="Login"
       >
         {storedCredentials ? (
-         <Stack.Screen name="Welcome" component={Welcome} />
+          <>
+            <Stack.Screen name="Dashboard" component={Dashboard}/>
+            <Stack.Screen name="Transaction" component={TransactionScreen}/>
+          </>
         ) : (
         <>
           <Stack.Screen name="Login" component={Login} />

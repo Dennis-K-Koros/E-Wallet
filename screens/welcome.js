@@ -28,8 +28,8 @@ const Welcome = () => {
  let { name, email, photoUrl } = storedCredentials || { name: 'John Doe', email: 'johndoe@gmail.com', picture: null };
   const AvatarImg = photoUrl ? { uri: photoUrl } : require('./../assets/img/user.png');
 
-  // for google sign in
-  name = name ? name : displayName;
+  //for google sign in
+  // name = name ? name : displayName;
 
   const clearLogin = async () => {
     try {

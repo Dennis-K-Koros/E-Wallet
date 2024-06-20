@@ -77,7 +77,7 @@ const Signup = ({navigation}) => {
 
     //form Handling
 
-    const handleSignup = (credentials, setSubmitting) => {
+    const handleSignup = async (credentials, setSubmitting) => {
         handleMessage(null);
         const url = `${baseAPIUrl}/user/signup`;
     
@@ -89,6 +89,7 @@ const Signup = ({navigation}) => {
                 if (status !== 'PENDING') {
                     handleMessage(message, status);
                 } else {
+                    temporaryUserPersist(({email, name, dateOfBirth } = credentials))
                     navigation.navigate('Verification', { email: data.email, userId: data.userId }); // Pass parameters correctly
                 }
                 setSubmitting(false);
@@ -99,6 +100,14 @@ const Signup = ({navigation}) => {
                 handleMessage("An error occurred. Please check your network and try again.");
             });
     }
+
+    const temporaryUserPersist = async (credentials) => {
+       try {
+        await AsyncStorage.setItem('tempUser',JSON.stringify(credentials));
+       } catch (error) {
+        handleMessage('Error with initial data handling.')
+       }
+    };
     
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
+import { Pressable } from 'react-native';
 
 const StatusBarHeight = Constants.statusBarHeight;
 
@@ -19,12 +20,13 @@ export const Colors = {
 
 const { primary, secondary, tertiary, darklight, brand, green, red} = Colors;
 
-export const StyledContainer = styled (View)`
+export const StyledContainer = styled(View)`
   flex: 1;
   padding: 25px;
   padding-top: ${StatusBarHeight + 30}px;
-  background-color: ${primary};
-`
+  background-color: ${Colors.primary};
+`;
+
 
 export const InnerContainer = styled(View)`
   flex: 1;
@@ -49,7 +51,7 @@ export const Avatar = styled(Image)`
   margin: auto;
   border-radius: 50px;
   border-width: 2px;
-  border-color: ${secondary};
+  border-color: ${Colors.secondary};
   margin-bottom: 10px;
   margin-top: 10px;
 `;
@@ -63,35 +65,35 @@ export const PageTitle = styled(Text)`
   font-size: 30px;
   text-align: center;
   font-weight: bold;
-  color: ${brand};
+  color: ${Colors.brand};
   padding: 10px;
 
-  ${(props) => props.welcome &&`
-  font-size:35px;
-`}
-
+  ${(props) => props.welcome && `
+    font-size: 35px;
+  `}
 `;
 
 export const SubTitle = styled(Text)`
   font-size: 18px;
   margin-bottom: 20px;
   letter-spacing: 1px;
-  font-weigth: bold;
-  color: ${tertiary};
+  font-weight: bold; 
 
-  ${(props) => props.welcome &&`
+  color: ${Colors.tertiary};
+
+  ${(props) => props.welcome && `
     margin-bottom: 5px;
     font-weight: normal;
   `}
-
 `;
+
 
 export const StyledFormArea = styled(View)`
   width: 90%;
 `;
 
 export const StyledTextInput = styled(TextInput)`
-  background-color: ${secondary};
+  background-color: ${Colors.secondary};
   padding: 15px;
   padding-left: 55px;
   padding-right: 55px;
@@ -100,11 +102,11 @@ export const StyledTextInput = styled(TextInput)`
   height: 60px;
   margin-vertical: 3px;
   margin-bottom: 10px;
-  color: ${tertiary};
+  color: ${Colors.tertiary};
 `;
 
 export const StyledInputLabel = styled(Text)`
-  color: ${tertiary};
+  color: ${Colors.tertiary};
   font-size: 13px;
   text-align: left;
 `;
@@ -125,7 +127,7 @@ export const RightIcon = styled(TouchableOpacity)`
 
 export const StyledButton = styled(TouchableOpacity)`
   padding: 15px;
-  background-color: ${brand};
+  background-color: ${Colors.brand};
   justify-content: center;
   align-items: center;
   border-radius: 5px;
@@ -133,21 +135,22 @@ export const StyledButton = styled(TouchableOpacity)`
   height: 60px;
   flex-direction: row;
 
-  ${(props)=> props.google == true &&`
-    background-color: ${green};
+  ${(props) => props.google && `
+    background-color: ${Colors.green};
   `}
 `;
 
 export const ButtonText = styled(Text)`
-  color: ${primary};
+  color: ${Colors.primary};
   font-size: 16px;
   padding-left: 10px;
 
-  ${(props)=> props.google == true &&`
+  ${(props) => props.google && `
     padding-left: 10px;
     padding-right: 10px;
   `}
 `;
+
 
 export const MsgBox = styled(Text)`
   text-align: center;
@@ -158,7 +161,7 @@ export const MsgBox = styled(Text)`
 export const Line = styled(View)`
   height: 1px;
   width: 100%;
-  background-color: ${darklight};
+  background-color: ${Colors.darklight};
   margin-vertical: 10px;
 `
 
@@ -172,7 +175,7 @@ export const ExtraView = styled(View)`
 export const ExtraText = styled(Text)`
   justify-content: center;
   align-content: center;
-  color: ${tertiary};
+  color: ${Colors.tertiary};
   font-size: 15px;
 `;
 
@@ -182,19 +185,19 @@ export const TextLink = styled(TouchableOpacity)`
 `;
 
 export const TextLinkContent = styled(Text)`
-  color: ${brand};
+  color: ${Colors.brand};
   font-size: 15px;
 
   ${(props) => {
     const { resendStatus } = props;
-    if(resendStatus === 'Failed!'){
-      return `color: ${Colors.red}`;
-    } else if (resendStatus === 'Sent!'){
-      return `color: ${Colors.green}`;
+    if (resendStatus === 'Failed!') {
+      return `color: ${Colors.red};`;
+    } else if (resendStatus === 'Sent!') {
+      return `color: ${Colors.green};`;
     }
   }}
-
 `;
+
 
 //verification components
 
@@ -233,4 +236,189 @@ export const InlineGroup = styled(View)`
   padding: 10px;
   justify-content: center;
   align-items: center;
+`;
+
+// modal styles
+export const ModalContainer = styled(StyledContainer)`
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0,0.7);
+`;
+
+export const ModalView = styled(View)`
+  margin: 20px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 35px;
+  align-items: center;
+  elevation: 5;
+  shadow-color: #000;
+  shadow-offset: 0px 2px;
+  shadow-opacity: 0.25;
+  shadow-radius: 4px;
+  width:100%;
+`;
+
+//pin input styles
+export const CodeInputSection = styled(View)`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  margin-vertical: 30px;
+`;
+
+export const HiddenTextInput = styled(TextInput)`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+`;
+
+export const CodeInputContainer = styled(Pressable)`
+  width: 70%;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const CodeInput = styled(View)`
+  border-color: ${Colors.lightGreen};
+  min-width: 15%;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 12px;
+`;
+
+export const CodeInputText = styled(Text)`
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  color: ${Colors.brand};
+`;
+
+export const CodeInputFocused = styled(CodeInput)`
+  border-color: ${Colors.green};
+`;
+
+export const DashboardTitle = styled(PageTitle)`
+  font-size: 24px;
+  text-align: right;
+  padding: 10px;
+`;
+
+export const DashboardSubtitle = styled(SubTitle)`
+  font-size: 16px;
+  margin-bottom: 10px;
+`;
+
+// Dashboard styles using styled-components
+export const DashboardContainer = styled(StyledContainer)`
+  padding: 0;
+`;
+
+export const DashboardScrollView = styled(ScrollView)`
+  background-color: ${Colors.primary};
+  padding: 0;
+`;
+
+export const DashboardInnerView = styled(View)`
+  padding: 25px;
+`;
+
+export const BalanceBox = styled(View)
+  `background-color: ${Colors.secondary};
+  border-radius: 10px;
+  padding: 5px;
+  align-items: center;
+  margin-bottom: 10px;`
+;
+
+export const Row = styled(View)
+  `flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;`
+;
+
+export const ExpenseIncomeBox = styled(View)
+ ` background-color: ${Colors.secondary};
+  border-radius: 10px;
+  padding: 10px;
+  width: 48%;
+  align-items: center;`
+;
+
+export const GrayText = styled(Text)
+  `color: ${Colors.gray};
+`;
+
+export const NavBar = styled(View)
+  `flex-direction: row;
+  justify-content: space-around;
+  background-color: ${Colors.secondary};
+  padding: 10px;`
+;
+
+export const NavItem = styled(TouchableOpacity)
+  `align-items: center;`
+;
+
+export const NavItemCenter = styled(TouchableOpacity)
+  `background-color: ${Colors.brand};
+  width: 55px;
+  height: 55px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  margin-top: -30px;`
+;
+
+export const NavText = styled(Text)
+  `color: ${Colors.brand};
+  font-size: 12px;`
+;
+
+export const NavTextCenter = styled(Text)
+  `color: ${Colors.primary};
+  font-size: 12px;`
+;
+
+export const TransactionsBox = styled(View)`
+  background-color: ${Colors.secondary};
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+`;
+
+export const TransactionCard = styled(View)`
+  padding: 10px;
+  background-color: ${Colors.primary};
+  border-radius: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const TransactionText = styled(Text)`
+  color: ${Colors.tertiary};
+  font-size: 16px;
+`;
+
+export const TransactionSeparator = styled(View)`
+  height: 1px;
+  width: 100%;
+  background-color: ${Colors.darklight};
+  margin-vertical: 5px;
+`;
+
+export const PickerContainer = styled(View)`
+  border: 1px solid ${Colors.gray};
+  border-radius: 5px;
+  padding: 5px;
+  width: 150px;
+`;
+
+export const PickerText = styled(Text)`
+  color: ${Colors.gray};
+  font-size: 16px;
 `;
