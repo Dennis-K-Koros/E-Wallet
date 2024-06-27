@@ -13,7 +13,7 @@ import Welcome from './../screens/welcome';
 import Verification from '../screens/OtpVerification';
 import BalanceInputScreen from '../screens/balanceInputScreen';
 import Dashboard from '../screens/dashboard';
-import TransactionScreen from '../screens/TransactionScreen';
+import AddTransaction from '../screens/AddTransaction';
 
 // Credentials context
 import { credentialsContext } from './../components/CredentialsContext';
@@ -42,7 +42,7 @@ return (
         {storedCredentials ? (
           <>
             <Stack.Screen name="Dashboard" component={Dashboard}/>
-            <Stack.Screen name="Transaction" component={TransactionScreen}/>
+            <Stack.Screen name="AddTransaction" component={AddTransaction}/>
           </>
         ) : (
         <>

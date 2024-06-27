@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { parseISO } from 'date-fns';
-import { View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseAPIUrl } from '../components/shared';
 import { credentialsContext } from './../components/CredentialsContext';
 import RNPickerSelect from 'react-native-picker-select';
 import {
-  StyledContainer,
-  PageTitle,
   SubTitle,
   Colors,
   DashboardContainer,
@@ -22,19 +21,16 @@ import {
   TransactionSeparator,
   GrayText,
   NavBar,
-  NavItem,
-  NavItemCenter,
   NavText,
   NavTextCenter,
   DashboardSubtitle,
   DashboardTitle,
   PickerContainer,
-  PickerText,
 } from '../components/styles';
 
 const { secondary, brand, primary, gray } = Colors;
 
-const Dashboard = ({ route }) => {
+const Dashboard = ({ navigation, route }) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
@@ -97,11 +93,13 @@ const Dashboard = ({ route }) => {
           console.log(`Transaction date: ${transaction.createdAt}`);
         });
   
+        const sortedTransactions = data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  
         if (type === 'income') {
-          setIncomes(data.data);
+          setIncomes(sortedTransactions);
           setTotalIncome(data.totalAmount || 0); // Set total income
         } else if (type === 'expense') {
-          setExpenses(data.data);
+          setExpenses(sortedTransactions);
           setTotalExpense(data.totalAmount || 0); // Set total expense
         }
       } else {
@@ -139,8 +137,10 @@ const Dashboard = ({ route }) => {
     }
   };
   
-  
-
+  const activeNavItemStyle = {
+    borderBottomWidth: 2,
+    borderBottomColor: brand, // or any color you prefer
+  };
 
   // Function to get current year and month in format "YYYY MMM"
   const getCurrentYearMonth = () => {
@@ -225,7 +225,7 @@ const Dashboard = ({ route }) => {
                   <TransactionCard>
                     <TransactionText>{expense.category}</TransactionText>
                     <TransactionText>Sh{expense.amount}</TransactionText>
-                    <TransactionText>{parseISO(expense.createdAt).toLocaleTimeString()}</TransactionText>
+                    <TransactionText>{parseISO(expense.createdAt).toLocaleDateString()}</TransactionText>
                   </TransactionCard>
                   <TransactionSeparator />
                 </View>
@@ -241,7 +241,7 @@ const Dashboard = ({ route }) => {
                   <TransactionCard>
                     <TransactionText>{income.category}</TransactionText>
                     <TransactionText>Sh{income.amount}</TransactionText>
-                    <TransactionText>{parseISO(income.createdAt).toLocaleTimeString()}</TransactionText>
+                    <TransactionText>{parseISO(income.createdAt).toLocaleDateString()}</TransactionText>
                   </TransactionCard>
                   <TransactionSeparator />
                 </View>
@@ -253,21 +253,41 @@ const Dashboard = ({ route }) => {
       </DashboardScrollView>
 
       <NavBar>
-        <NavItem>
-          <NavText>Transaction</NavText>
-        </NavItem>
-        <NavItem>
-          <NavText>Report</NavText>
-        </NavItem>
-        <NavItemCenter>
-          <NavTextCenter>+</NavTextCenter>
-        </NavItemCenter>
-        <NavItem>
-          <NavText>Budget</NavText>
-        </NavItem>
-        <NavItem>
-          <NavText>Mine</NavText>
-        </NavItem>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Dashboard')}
+          style={[{ alignItems: 'center' }, route.name === 'Dashboard' && activeNavItemStyle]}
+        >
+          <Ionicons name="list-outline" size={24} color={route.name === 'Dashboard' ? brand : gray} />
+          <NavText style={{ color: route.name === 'Dashboard' ? brand : gray }}>Dashboard</NavText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Report')}
+          style={[{ alignItems: 'center' }, route.name === 'Report' && activeNavItemStyle]}
+        >
+          <Ionicons name="pie-chart-outline" size={24} color={route.name === 'Report' ? brand : gray} />
+          <NavText style={{ color: route.name === 'Report' ? brand : gray }}>Report</NavText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('AddTransaction')}
+          style={[{ alignItems: 'center' }, route.name === 'AddTransaction' && activeNavItemStyle]}
+        >
+          <Ionicons name="add-circle-outline" size={24} color={route.name === 'AddTransaction' ? brand : gray} />
+          <NavTextCenter style={{ color: route.name === 'AddTransaction' ? brand : gray }}>+</NavTextCenter>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Budget')}
+          style={[{ alignItems: 'center' }, route.name === 'Budget' && activeNavItemStyle]}
+        >
+          <Ionicons name="wallet-outline" size={24} color={route.name === 'Budget' ? brand : gray} />
+          <NavText style={{ color: route.name === 'Budget' ? brand : gray }}>Budget</NavText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Profile')}
+          style={[{ alignItems: 'center' }, route.name === 'Profile' && activeNavItemStyle]}
+        >
+          <Ionicons name="person-outline" size={24} color={route.name === 'Profile' ? brand : gray} />
+          <NavText style={{ color: route.name === 'Profile' ? brand : gray }}>Profile</NavText>
+        </TouchableOpacity>
       </NavBar>
     </DashboardContainer>
   );
