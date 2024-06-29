@@ -13,7 +13,7 @@ import Verification from '../screens/OtpVerification';
 import BalanceInputScreen from '../screens/balanceInputScreen';
 import Dashboard from '../screens/dashboard';
 import AddTransaction from '../screens/AddTransaction';
-import Report from '../screens/Report'; 
+import Report from '../screens/Report';
 
 // Credentials context
 import { credentialsContext } from '../components/CredentialsContext';
