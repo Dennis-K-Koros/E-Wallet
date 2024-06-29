@@ -73,34 +73,36 @@ const AddTransaction = ({ route }) => {
 
   const handleTransaction = async () => {
     try {
-      const storedCredentials = await AsyncStorage.getItem('myWalletCredentials');
-      const credentials = JSON.parse(storedCredentials);
-      const userId = credentials?._id;
+        const storedCredentials = await AsyncStorage.getItem('myWalletCredentials');
+        const credentials = JSON.parse(storedCredentials);
+        const userId = credentials?._id;
 
-      if (!userId) {
-        console.error('User ID not found');
-        return;
-      }
+        if (!userId) {
+            console.error('User ID not found');
+            return;
+        }
 
-      const transactionData = {
-        userId,
-        category,
-        amount,
-        paymentMethod,
-        date,
-        note: note || null,
-      };
+        const transactionData = {
+            userId,
+            category,
+            amount,
+            paymentMethod,
+            date,
+            note: note || null,
+            type: transactionType.toLowerCase(),
+        };
 
-      const url = `${baseAPIUrl}/${transactionType.toLowerCase()}/create`;
+        const url = `${baseAPIUrl}/transaction/create`;
 
-      await axios.post(url, transactionData);
-      console.log('Transaction created successfully');
-      handleMessage('Transaction created successfully','SUCCESS');
+        await axios.post(url, transactionData);
+        console.log('Transaction created successfully');
+        handleMessage('Transaction created successfully', 'SUCCESS');
     } catch (error) {
-      console.error('Error creating transaction', error);
-      handleMessage('Error creating transaction','FAILURE');
+        console.error('Error creating transaction', error);
+        handleMessage('Error creating transaction', 'FAILURE');
     }
-  };
+};
+
 
   return (
     <StyledContainer>

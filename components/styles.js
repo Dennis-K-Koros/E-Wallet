@@ -16,8 +16,23 @@ export const Colors = {
   red: "#EF4444",
   gray: "#6B7280",
   lightGreen: 'rgba(16,185,129,0.1)',
-}
-
+  // Category Colors
+  Food: '#FFC0CB',
+  Drinks: '#A52A2A',
+  Shopping: '#800080',
+  Misc: '#808080',
+  Transport: '#ADD8E6',
+  Entertainment: '#FFA500',
+  Housing: '#90EE90',
+  Electronics: '#0000FF',
+  Medical: '#FF0000',
+  Education: '#10B981',
+  Salary: '#A52A2A',
+  Investments: '#FFD700',
+  Allowance: '#10B981',
+  Bonus: '#FFA500',
+  Other: '#0000FF',
+};
 const { primary, secondary, tertiary, darklight, brand, green, red} = Colors;
 
 export const StyledContainer = styled(View)`
