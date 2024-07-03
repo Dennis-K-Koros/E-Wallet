@@ -15,13 +15,13 @@ import ResendTimer from '../components/ResendTimer';
 
 const { brand, primary, green, lightGreen, gray } = Colors;
 
-const Verification = ({ route, navigation }) => { // Added navigation prop here
+const Verification = ({ route, navigation }) => {
     const [code, setCode] = useState('');
     const [pinReady, setPinReady] = useState(false);
     const [verifying, setVerifying] = useState(false);
     const MAX_CODE_LENGTH = 4;
-    const [modalvisible, setModalVisible] = useState(false);
-    const [VerificationSuccessful, setverificationSuccessful] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [verificationSuccessful, setVerificationSuccessful] = useState(false);
     const [requestMessage, setRequestMessage] = useState('');
     const [timeLeft, setTimeLeft] = useState(null);
     const [targetTime, setTargetTime] = useState(null);
@@ -85,19 +85,19 @@ const Verification = ({ route, navigation }) => { // Added navigation prop here
             const { data } = result;
 
             if (data.status !== 'VERIFIED') {
-                setverificationSuccessful(false);
+                setVerificationSuccessful(false);
                 setRequestMessage(data.message);
             } else {
-                setverificationSuccessful(true);
+                setVerificationSuccessful(true);
                 // Navigate to BalanceInputScreen on successful verification
-                navigation.navigate('BalanceInput', { email, userId });
+                // navigation.navigate('BalanceInput', { email, userId });
             }
 
             setModalVisible(true);
             setVerifying(false);
         } catch (error) {
             setRequestMessage(error.message);
-            setverificationSuccessful(false);
+            setVerificationSuccessful(false);
             setModalVisible(true);
             setVerifying(false);
         }
@@ -176,10 +176,13 @@ const Verification = ({ route, navigation }) => { // Added navigation prop here
                 </BottomHalf>
 
                 <VerificationModal
-                    successful={VerificationSuccessful}
+                    successful={verificationSuccessful}
                     setModalVisible={setModalVisible}
-                    modalVisible={modalvisible}
+                    modalVisible={modalVisible}
                     requestMessage={requestMessage}
+                    navigation={navigation} // Pass navigation here
+                    email={email} // Pass email here
+                    userId={userId} // Pass userId here
                 />
             </StyledContainer>
         </KeyboardAvoidingWrapper>

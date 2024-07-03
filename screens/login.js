@@ -132,7 +132,7 @@ const Login = ({ navigation, route }) => {
       <StyledContainer>
         <StatusBar style='dark' />
         <InnerContainer>
-          <PageLogo resizeMode="cover" source={require('./../assets/img/img1.png')} />
+          <PageLogo resizeMode="cover" source={require('./../assets/img/img3.jpg')} />
           <PageTitle>My Wallet</PageTitle>
           <SubTitle>Account Login</SubTitle>
           <Formik

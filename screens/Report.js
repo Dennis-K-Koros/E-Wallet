@@ -17,7 +17,7 @@ import {
   Colors
 } from '../components/styles';
 
-const { brand, darklight, primary, tertiary } = Colors;
+const { brand, darklight, primary, gray, tertiary } = Colors;
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -121,19 +121,21 @@ const Report = ({ navigation, route }) => {
     <DashboardContainer>
       <DashboardScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <DashboardInnerView>
-          <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <DashboardTitle>{userDetails?.name}'s Report</DashboardTitle>
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <View>
+              <DashboardTitle style={{ color: gray }}>{userDetails?.name}'s</DashboardTitle>
+              <DashboardTitle style={{ color: gray }}>Report</DashboardTitle>
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity onPress={() => handleMonthChange('prev')}>
-                <Ionicons name="chevron-back-outline" size={24} color={tertiary} />
+                <Ionicons name="chevron-back-outline" size={30} color={tertiary} />
               </TouchableOpacity>
               <Text style={{ fontSize: 18, color: tertiary }}>{`${getCurrentYearMonth(selectedMonth)}`}</Text>
               <TouchableOpacity onPress={() => handleMonthChange('next')}>
-                <Ionicons name="chevron-forward-outline" size={24} color={tertiary} />
+                <Ionicons name="chevron-forward-outline" size={30} color={tertiary} />
               </TouchableOpacity>
             </View>
           </Row>
-
           <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 20 }}>
             <TouchableOpacity onPress={() => setTransactionType('Expense')} style={{ padding: 10 }}>
               <Text style={{ fontSize: 18, color: transactionType === 'Expense' ? brand : darklight }}>Expense</Text>
