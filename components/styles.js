@@ -437,3 +437,49 @@ export const PickerText = styled(Text)`
   color: ${Colors.gray};
   font-size: 16px;
 `;
+
+// Profile styles
+export const ProfileContainer = styled(StyledContainer)`
+  padding: 0;
+`;
+
+export const ProfileInnerView = styled(View)`
+  padding: 25px;
+`;
+
+export const ProfileTitle = styled(PageTitle)`
+  font-size: 30px;
+  text-align: left;
+`;
+
+export const ProfileSubtitle = styled(SubTitle)`
+  font-size: 20px;
+  text-align: left;
+`;
+
+export const ProfileBox = styled(View)`
+  background-color: ${Colors.secondary};
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+`;
+
+export const ProfileText = styled(Text)`
+  font-size: 16px;
+  color: ${Colors.tertiary};
+`;
+
+export const ProfileButton = styled(TouchableOpacity)`
+  padding: 15px;
+  background-color: ${Colors.brand};
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  margin-vertical: 5px;
+`;
+
+export const ProfileButtonText = styled(Text)`
+  color: ${Colors.primary};
+  font-size: 16px;
+  font-weight: bold;
+`;

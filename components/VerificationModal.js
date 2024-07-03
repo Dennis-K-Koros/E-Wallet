@@ -11,6 +11,9 @@ const VerificationModal = ({
     setModalVisible,
     successful,
     requestMessage,
+    navigation, // Add navigation prop here
+    email, // Add email prop here
+    userId, // Add userId prop here
 }) => {
     const buttonHandler = () => {
         setModalVisible(false);
@@ -29,6 +32,9 @@ const VerificationModal = ({
                     {successful &&
                         <SuccessContent
                             buttonHandler={buttonHandler}
+                            navigation={navigation} // Pass navigation here
+                            email={email} // Pass email here
+                            userId={userId} // Pass userId here
                         />
                     }
                 </ModalContainer>
@@ -37,7 +43,7 @@ const VerificationModal = ({
     );
 };
 
-const SuccessContent = ({ buttonHandler }) => {
+const SuccessContent = ({ buttonHandler, navigation, email, userId }) => { // Add email and userId props here
     return (
         <ModalView>
             <StatusBar style="dark" />
@@ -55,7 +61,7 @@ const SuccessContent = ({ buttonHandler }) => {
 
             <StyledButton
                 style={{ backgroundColor: green, flexDirection: "row" }}
-                onPress={buttonHandler}
+                onPress={() => navigation.navigate('BalanceInput', { email, userId })} // Corrected this line
             >
                 <ButtonText>Continue To App</ButtonText>
                 <Ionicons name="arrow-forward-circle" size={25} color={primary} />

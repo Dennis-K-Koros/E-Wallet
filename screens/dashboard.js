@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { parseISO, format } from 'date-fns';
+import { credentialsContext } from '../components/CredentialsContext';
+import { baseAPIUrl } from '../components/shared';
 import { View, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { baseAPIUrl } from '../components/shared';
-import { credentialsContext } from './../components/CredentialsContext';
+import { parseISO, format, startOfWeek, endOfWeek } from 'date-fns';
 import RNPickerSelect from 'react-native-picker-select';
 import {
   SubTitle,
@@ -24,7 +24,6 @@ import {
   NavText,
   NavTextCenter,
   DashboardSubtitle,
-  DashboardTitle,
   PickerContainer,
 } from '../components/styles';
 
@@ -69,7 +68,7 @@ const Dashboard = ({ navigation, route }) => {
     setIsLoading(true);
     const month = selectedMonth.getMonth() + 1;
     const year = selectedMonth.getFullYear();
-      const userId = userDetails._id;
+    const userId = userDetails._id;
     const incomeUrl = `${baseAPIUrl}/transaction/period/month?userId=${userId}&month=${month}&year=${year}&type=income`;
     const expenseUrl = `${baseAPIUrl}/transaction/period/month?userId=${userId}&month=${month}&year=${year}&type=expense`;
 
@@ -85,30 +84,15 @@ const Dashboard = ({ navigation, route }) => {
         setTransactions(sortedTransactions);
         setTotalIncome(incomeData.totalAmount || 0);
         setTotalExpense(expenseData.totalAmount || 0);
+        setTotalBalance((incomeData.totalAmount || 0) - (expenseData.totalAmount || 0));
       } else {
         console.error('Error fetching transactions:', incomeData.message, expenseData.message);
       }
     } catch (error) {
       console.error('Error fetching transactions:', error.message);
     }
-  };
 
-  const fetchTotalBalance = async () => {
-    const url = `${baseAPIUrl}/balance/${userDetails._id}`;
-    console.log(`Fetching total balance, URL: ${url}`);
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.status === 'SUCCESS') {
-        setTotalBalance(data.data.balance || 0);
-      } else {
-        console.error('Error fetching total balance:', data.message || 'Unknown error');
-      }
-    } catch (error) {
-      console.error('Error fetching total balance:', error.message);
-    }
+    setIsLoading(false);
   };
 
   const activeNavItemStyle = {
@@ -124,31 +108,41 @@ const Dashboard = ({ navigation, route }) => {
 
   const handleMonthChange = (direction) => {
     const newDate = new Date(selectedMonth);
-  
+
     if (direction === 'prev') {
       newDate.setMonth(newDate.getMonth() - 1);
     } else if (direction === 'next' && isValidMonth(new Date())) {
       newDate.setMonth(newDate.getMonth() + 1);
     }
-  
+
+    console.log(`Month changed to: ${newDate}`);
     setSelectedMonth(newDate);
   };
-  
+
   const isValidMonth = (date) => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     const selectedMonth = date.getMonth();
     const selectedYear = date.getFullYear();
-  
+
     return selectedYear < currentYear || (selectedYear === currentYear && selectedMonth <= currentMonth);
   };
 
-
   useEffect(() => {
     if (userDetails) {
-      fetchTotalBalance();
       fetchTransactions();
     }
+  }, [userDetails, selectedMonth]);
+
+  // Periodic fetching every 60 seconds
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (userDetails) {
+        fetchTransactions();
+      }
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(intervalId); // Clean up on component unmount
   }, [userDetails, selectedMonth]);
 
   const groupTransactionsByDate = (transactions) => {
@@ -162,21 +156,51 @@ const Dashboard = ({ navigation, route }) => {
     }, {});
   };
 
-  const groupedTransactions = groupTransactionsByDate(transactions);
+  const groupTransactionsByWeek = (transactions) => {
+    return transactions.reduce((groups, transaction) => {
+      const date = parseISO(transaction.date);
+      const weekStart = format(startOfWeek(date), 'd MMM yyyy');
+      const weekEnd = format(endOfWeek(date), 'd MMM yyyy');
+      const weekRange = `${weekStart} - ${weekEnd}`;
+      if (!groups[weekRange]) {
+        groups[weekRange] = [];
+      }
+      groups[weekRange].push(transaction);
+      return groups;
+    }, {});
+  };
+
+  const aggregateTransactions = (transactions) => {
+    const aggregated = transactions.reduce((acc, transaction) => {
+      const key = `${transaction.date}-${transaction.category}`;
+      if (!acc[key]) {
+        acc[key] = { ...transaction, amount: 0 };
+      }
+      acc[key].amount += transaction.amount;
+      return acc;
+    }, {});
+    return Object.values(aggregated);
+  };
+
+  const groupedTransactions =
+    selectedPeriod === 'day' ? groupTransactionsByDate(transactions) : groupTransactionsByWeek(transactions);
 
   return (
     <DashboardContainer>
       <DashboardScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <DashboardInnerView>
           <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <DashboardSubtitle style={{ color: gray }}>{greeting}, {userDetails?.name}</DashboardSubtitle>
+            <View>
+              <DashboardSubtitle style={{ color: gray }}>{greeting},</DashboardSubtitle>
+              <DashboardSubtitle style={{ color: gray }}>{userDetails?.name}</DashboardSubtitle>
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity onPress={() => handleMonthChange('prev')}>
-                <Ionicons name="chevron-back-outline" size={24} color={tertiary} />
+                <Ionicons name="chevron-back-outline" size={30} color={tertiary} />
               </TouchableOpacity>
               <Text style={{ fontSize: 18, color: tertiary }}>{`${getCurrentYearMonth(selectedMonth)}`}</Text>
               <TouchableOpacity onPress={() => handleMonthChange('next')}>
-                <Ionicons name="chevron-forward-outline" size={24} color={tertiary} />
+                <Ionicons name="chevron-forward-outline" size={30} color={tertiary} />
               </TouchableOpacity>
             </View>
           </Row>
@@ -207,22 +231,30 @@ const Dashboard = ({ navigation, route }) => {
                     { label: 'Week', value: 'week' },
                   ]}
                   style={{
-                    inputIOS: { color: gray, fontSize: 16 },
-                    inputAndroid: { color: gray, fontSize: 16 },
+                    inputIOS: { color: gray, fontSize: 14, padding: 5 },
+                    inputAndroid: { color: gray, fontSize: 14, padding: 5 },
+                    iconContainer: { top: 5, right: 15 },
                   }}
+                  value={selectedPeriod}
+                  useNativeAndroidPickerStyle={false}
+                  Icon={() => (
+                    <Ionicons name="chevron-down-outline" size={20} color={gray} />
+                  )}
                 />
               </PickerContainer>
             </View>
           </Row>
 
           <TransactionsBox>
-            {transactions.length === 0 ? (
+            {isLoading ? (
+              <GrayText>Loading transactions...</GrayText>
+            ) : transactions.length === 0 ? (
               <GrayText>No transactions for the {selectedPeriod.toLowerCase()}.</GrayText>
             ) : (
               Object.keys(groupedTransactions).map(date => (
                 <View key={date}>
                   <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{date}</Text>
-                  {groupedTransactions[date].map(transaction => (
+                  {aggregateTransactions(groupedTransactions[date]).map(transaction => (
                     <View key={transaction._id}>
                       <TransactionCard>
                         <TransactionText>{transaction.category}</TransactionText>
@@ -239,8 +271,6 @@ const Dashboard = ({ navigation, route }) => {
           </TransactionsBox>
         </DashboardInnerView>
       </DashboardScrollView>
-
-
       <NavBar>
         <TouchableOpacity
           onPress={() => navigation.navigate('Dashboard')}
@@ -264,11 +294,11 @@ const Dashboard = ({ navigation, route }) => {
           <NavTextCenter style={{ color: route.name === 'AddTransaction' ? brand : gray }}>+</NavTextCenter>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Budget')}
-          style={[{ alignItems: 'center' }, route.name === 'Budget' && activeNavItemStyle]}
+          onPress={() => navigation.navigate('BudgetManagement')}
+          style={[{ alignItems: 'center' }, route.name === 'BudgetManagement' && activeNavItemStyle]}
         >
-          <Ionicons name="wallet-outline" size={24} color={route.name === 'Budget' ? brand : gray} />
-          <NavText style={{ color: route.name === 'Budget' ? brand : gray }}>Budget</NavText>
+          <Ionicons name="wallet-outline" size={24} color={route.name === 'BudgetManagement' ? brand : gray} />
+          <NavText style={{ color: route.name === 'BudgetManagement' ? brand : gray }}>Budget</NavText>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate('Profile')}

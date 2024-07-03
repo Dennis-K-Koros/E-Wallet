@@ -32,27 +32,34 @@ const BalanceInputScreen = ({ navigation, route }) => {
     const persistLoginAfterOTPVerification = async () => {
         try {
             const tempUser = await AsyncStorage.getItem('tempUser');
-            await AsyncStorage.setItem('MyWalletCredentials', JSON.stringify(tempUser));
-            setStoredCredentials(JSON.parse(tempUser));
+            if (tempUser) {
+                console.log('Persisting user credentials:', JSON.parse(tempUser)); // Debug log
+                await AsyncStorage.setItem('MyWalletCredentials', JSON.stringify(tempUser));
+                setStoredCredentials(JSON.parse(tempUser));
+            } else {
+                alert('No temporary user data found.');
+            }
         } catch (error) {
-            alert(`Error with persisting user data.`);
+            alert(`Error with persisting user data: ${error.message}`);
         }
     };
+    
 
     const handleBalanceInput = (credentials, setSubmitting) => {
         handleMessage(null);
         const url = `${baseAPIUrl}/balance/create`;
-
+    
         axios.post(url, credentials)
             .then(async (response) => {
                 const result = response.data;
                 const { message, status, data } = result;
-
+    
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
                 } else {
                     console.log('Balance successfully submitted:', data);
                     const userCredentials = { email, userId, balance: credentials.balance };
+                    console.log('Saving user credentials:', userCredentials); // Debug log
                     await AsyncStorage.setItem('MyWalletCredentials', JSON.stringify(userCredentials));
                     setStoredCredentials(userCredentials);
                     persistLoginAfterOTPVerification();
@@ -65,6 +72,7 @@ const BalanceInputScreen = ({ navigation, route }) => {
                 handleMessage('An error occurred. Please check your network and try again');
             });
     };
+    
 
     return (
         <KeyboardAvoidingWrapper>

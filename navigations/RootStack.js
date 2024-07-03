@@ -14,6 +14,11 @@ import BalanceInputScreen from '../screens/balanceInputScreen';
 import Dashboard from '../screens/dashboard';
 import AddTransaction from '../screens/AddTransaction';
 import Report from '../screens/Report';
+import Profile from '../screens/profile';
+import BudgetManagement from '../screens/budgetManagement';
+import AddBudget from '../screens/AddBudget';
+import UpdateDetails from '../screens/updateDetails';
+import ResetPassword from '../screens/resetPassword';
 
 // Credentials context
 import { credentialsContext } from '../components/CredentialsContext';
@@ -44,6 +49,11 @@ const RootStack = () => {
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />
             <Stack.Screen name="Report" component={Report} />
+            <Stack.Screen name='Profile' component={Profile}/>
+            <Stack.Screen name='AddBudget' component={AddBudget}/>
+            <Stack.Screen name='BudgetManagement' component={BudgetManagement}/>
+            <Stack.Screen name="UpdateDetails" component={UpdateDetails} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />  
           </>
         ) : (
           <>
