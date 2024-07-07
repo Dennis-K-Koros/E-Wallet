@@ -19,6 +19,7 @@ import BudgetManagement from '../screens/budgetManagement';
 import AddBudget from '../screens/AddBudget';
 import UpdateDetails from '../screens/updateDetails';
 import ResetPassword from '../screens/resetPassword';
+import EditTransaction from '../screens/EditTransaction';
 
 // Credentials context
 import { credentialsContext } from '../components/CredentialsContext';
@@ -48,6 +49,7 @@ const RootStack = () => {
           <>
             <Stack.Screen name="Dashboard" component={Dashboard} />
             <Stack.Screen name="AddTransaction" component={AddTransaction} />
+            <Stack.Screen name="EditTransaction" component={EditTransaction} />
             <Stack.Screen name="Report" component={Report} />
             <Stack.Screen name='Profile' component={Profile}/>
             <Stack.Screen name='AddBudget' component={AddBudget}/>

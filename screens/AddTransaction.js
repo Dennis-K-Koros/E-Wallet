@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { credentialsContext } from './../components/CredentialsContext';
 import { baseAPIUrl } from '../components/shared';
 import axios from 'axios';
+import parseMpesaMessage from '../utils/smsParser'; // Import the parser
 
 const expenseCategories = [
   { label: 'Food', value: 'Food', icon: 'fast-food-outline' },
@@ -82,7 +83,28 @@ const AddTransaction = ({ route }) => {
           return;
       }
 
-      const transactionData = {
+      // If a message was passed, parse it and use its values
+      const { message: incomingMessage } = route.params || {};
+      let transactionData = {};
+
+      if (incomingMessage) {
+        const parsedData = parseMpesaMessage(incomingMessage);
+        if (parsedData) {
+          transactionData = {
+            userId,
+            category: parsedData.category,
+            amount: parsedData.amount,
+            paymentMethod: parsedData.paymentMethod,
+            date: parsedData.date,
+            note: note || null,
+            type: parsedData.type,
+          };
+        }
+      }
+
+      // If no message was parsed, use the state values
+      if (!transactionData.amount) {
+        transactionData = {
           userId,
           category,
           amount,
@@ -90,7 +112,8 @@ const AddTransaction = ({ route }) => {
           date,
           note: note || null,
           type: transactionType.toLowerCase(),
-      };
+        };
+      }
 
       const url = `${baseAPIUrl}/transaction/create`;
 
@@ -103,7 +126,6 @@ const AddTransaction = ({ route }) => {
       handleMessage('Error creating transaction', 'FAILURE');
    }
   };
-
 
   return (
     <StyledContainer>

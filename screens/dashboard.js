@@ -255,7 +255,7 @@ const Dashboard = ({ navigation, route }) => {
                 <View key={date}>
                   <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{date}</Text>
                   {aggregateTransactions(groupedTransactions[date]).map(transaction => (
-                    <View key={transaction._id}>
+                    <TouchableOpacity key={transaction._id} onPress={() => navigation.navigate('EditTransaction', { transaction })}>
                       <TransactionCard>
                         <TransactionText>{transaction.category}</TransactionText>
                         <TransactionText style={{ color: transaction.type === 'income' ? 'green' : 'red' }}>
@@ -263,7 +263,7 @@ const Dashboard = ({ navigation, route }) => {
                         </TransactionText>
                       </TransactionCard>
                       <TransactionSeparator />
-                    </View>
+                    </TouchableOpacity>
                   ))}
                 </View>
               ))

@@ -15,14 +15,17 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.EWallet",
-      "config":{
+      "config": {
         "googleSignIn": {
-          "reservedClientId":"com.googleusercontent.apps.871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds"
+          "reservedClientId": "com.googleusercontent.apps.871962684885-jqrt6n4o4glfpj6k5713bebrt11tk7ds"
         }
       }
     },
     "android": {
       "package": "com.example.EWallet",
+      "permissions": [
+        "android.permission.READ_SMS"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

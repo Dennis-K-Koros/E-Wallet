@@ -7,6 +7,7 @@ import { baseAPIUrl } from '../components/shared';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Progress from 'react-native-progress';
+import NotificationHandler from '../components/NotificationHandler';
 
 const BudgetManagement = ({ navigation, route }) => {
   const [budgets, setBudgets] = useState([]);
@@ -24,7 +25,7 @@ const BudgetManagement = ({ navigation, route }) => {
           console.error('User ID not found');
           return;
         }
-        
+
         const url = `${baseAPIUrl}/budget/${userId}`;
         const response = await axios.get(url);
         const data = response.data.data;
@@ -32,10 +33,16 @@ const BudgetManagement = ({ navigation, route }) => {
         // Ensure the data is an array
         if (Array.isArray(data)) {
           setBudgets(data);
+          await AsyncStorage.setItem('budgets', JSON.stringify(data));
         } else {
           setBudgets([]);
         }
         console.log('Fetched budgets:', data);
+
+        // Check budgets and notify
+        data.forEach(budget => {
+          NotificationHandler.scheduleBudgetNotification(budget);
+        });
       } catch (error) {
         console.error('Error fetching budgets', error);
         setBudgets([]);
