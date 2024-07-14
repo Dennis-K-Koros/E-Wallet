@@ -65,7 +65,6 @@ const AddBudget = ({ navigation }) => {
   const [category, setCategory] = useState('All');
   const [amount, setAmount] = useState('');
   const [timeFrame, setTimeFrame] = useState('month');
-  const [customTimeFrame, setCustomTimeFrame] = useState('');
   const [note, setNote] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
   const { storedCredentials } = useContext(credentialsContext);
@@ -74,6 +73,7 @@ const AddBudget = ({ navigation }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(calculateEndDate('month', new Date()));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const handleMessage = (message, type = 'FAILED') => {
     setMessage(message);
@@ -89,10 +89,17 @@ const AddBudget = ({ navigation }) => {
 
   const handleStartDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || startDate;
+    setShowStartDatePicker(false);
     setStartDate(currentDate);
     if (timeFrame !== 'custom') {
       setEndDate(calculateEndDate(timeFrame, currentDate));
     }
+  };
+
+  const handleEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || endDate;
+    setShowEndDatePicker(false);
+    setEndDate(currentDate);
   };
 
   const renderCategoryItem = ({ item }) => (
@@ -123,7 +130,7 @@ const AddBudget = ({ navigation }) => {
         userId,
         category,
         amount,
-        timeFrame: timeFrame === 'custom' ? customTimeFrame : timeFrame,
+        timeFrame: timeFrame === 'custom' ? 'custom' : timeFrame,
         startDate,
         endDate,
         note: note || null,
@@ -187,14 +194,14 @@ const AddBudget = ({ navigation }) => {
             </Picker>
             <StyledInputLabel>Start Date</StyledInputLabel>
             <TouchableOpacity
-              onPress={() => timeFrame === 'custom' && setShowStartDatePicker(true)}
+              onPress={() => setShowStartDatePicker(true)}
               style={{ flexDirection: 'row', alignItems: 'center', borderColor: Colors.darklight, borderWidth: 1, borderRadius: 5, marginBottom: 20 }}
             >
               <Ionicons name="calendar-outline" size={20} color={Colors.brand} style={{ marginLeft: 10 }} />
               <TextInput
                 style={{ flex: 1, padding: 10 }}
+                editable={false}
                 value={formatDate(startDate)}
-                editable={timeFrame === 'custom'}
               />
             </TouchableOpacity>
             {showStartDatePicker && (
@@ -202,28 +209,45 @@ const AddBudget = ({ navigation }) => {
                 value={startDate}
                 mode="date"
                 display="default"
+                minimumDate={new Date()}
                 onChange={handleStartDateChange}
               />
             )}
-            <StyledInputLabel>End Date</StyledInputLabel>
-            <View style={{ flexDirection: 'row', alignItems: 'center', borderColor: Colors.darklight, borderWidth: 1, borderRadius: 5, marginBottom: 20 }}>
-              <Ionicons name="calendar-outline" size={20} color={Colors.brand} style={{ marginLeft: 10 }} />
-              <TextInput
-                style={{ flex: 1, padding: 10 }}
-                value={formatDate(endDate)}
-                editable={timeFrame === 'custom'}
-              />
-            </View>
+            {timeFrame === 'custom' && (
+              <>
+                <StyledInputLabel>End Date</StyledInputLabel>
+                <TouchableOpacity
+                  onPress={() => setShowEndDatePicker(true)}
+                  style={{ flexDirection: 'row', alignItems: 'center', borderColor: Colors.darklight, borderWidth: 1, borderRadius: 5, marginBottom: 20 }}
+                >
+                  <Ionicons name="calendar-outline" size={20} color={Colors.brand} style={{ marginLeft: 10 }} />
+                  <TextInput
+                    style={{ flex: 1, padding: 10 }}
+                    editable={false}
+                    value={formatDate(endDate)}
+                  />
+                </TouchableOpacity>
+                {showEndDatePicker && (
+                  <DateTimePicker
+                    value={endDate}
+                    mode="date"
+                    display="default"
+                    minimumDate={startDate}
+                    onChange={handleEndDateChange}
+                  />
+                )}
+              </>
+            )}
             <StyledInputLabel>Note</StyledInputLabel>
             <StyledTextInput
+              placeholder="Enter note (optional)"
               value={note}
               onChangeText={setNote}
-              style={{ borderWidth: 1, borderColor: Colors.darklight, borderRadius: 5, backgroundColor: Colors.primary }}
             />
-            <MsgBox type={messageType}>{message}</MsgBox>
             <Line />
+            <MsgBox type={messageType}>{message}</MsgBox>
             <StyledButton onPress={handleAddBudget}>
-              <ButtonText>Save</ButtonText>
+              <ButtonText>Add Budget</ButtonText>
             </StyledButton>
           </StyledFormArea>
         </InnerContainer>
@@ -237,14 +261,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContainer: {
-    width: 250,
+    width: 300,
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    alignItems: 'left',
+    alignItems: 'center',
   },
 });
 

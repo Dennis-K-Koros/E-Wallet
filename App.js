@@ -24,9 +24,15 @@ const checkSmsPermission = async () => {
   if (Platform.OS === 'android') {
     const status = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS);
     console.log('Initial SMS permission status:', status);
+    if (!status) {
+      const requestStatus = await requestSmsPermission();
+      console.log('SMS permission request status:', requestStatus);
+      return requestStatus;
+    }
+    return status;
   } else {
-    // For iOS, SMS permissions are handled differently
     console.log('SMS permission is not applicable on iOS.');
+    return true;
   }
 };
 
@@ -40,14 +46,16 @@ export default function App() {
     try {
       console.log('Preparing app...');
       await SplashScreen.preventAutoHideAsync();
-      await checkLoginCrendentials();
-      await checkSmsPermission(); // Check initial SMS permission status
-      const smsPermissionGranted = await requestSmsPermission();
+      await checkLoginCredentials();
+      const smsPermissionGranted = await checkSmsPermission();
       console.log('SMS permission granted status:', smsPermissionGranted);
       const notificationPermissionGranted = await requestNotificationPermission();
+      
       if (smsPermissionGranted) {
         const messages = await readSmsMessages({ box: 'inbox', address: 'MPESA' });
+        console.log('Read SMS messages:', messages);
         const transactions = parseTransactionMessages(messages);
+        console.log('Parsed transactions:', transactions);
         setTransactions(transactions);
         if (addTransactionRef.current) {
           transactions.forEach(transaction => {
@@ -62,11 +70,11 @@ export default function App() {
       setAppReady(true);
       await SplashScreen.hideAsync();
     }
-  };
+  };  
 
   useEffect(() => {
     prepare();
-  }, [])
+  }, []);
 
   useEffect(() => {
     try {
@@ -86,7 +94,7 @@ export default function App() {
     }
   }, []);
 
-  const checkLoginCrendentials = async () => {
+  const checkLoginCredentials = async () => {
     try {
       console.log('Checking login credentials...');
       const result = await AsyncStorage.getItem('myWalletCredentials');

@@ -172,7 +172,7 @@ const Dashboard = ({ navigation, route }) => {
 
   const aggregateTransactions = (transactions) => {
     const aggregated = transactions.reduce((acc, transaction) => {
-      const key = `${transaction.date}-${transaction.category}`;
+      const key = transaction.category;
       if (!acc[key]) {
         acc[key] = { ...transaction, amount: 0 };
       }
@@ -184,6 +184,9 @@ const Dashboard = ({ navigation, route }) => {
 
   const groupedTransactions =
     selectedPeriod === 'day' ? groupTransactionsByDate(transactions) : groupTransactionsByWeek(transactions);
+
+  // Add debug logs to inspect grouped transactions
+  console.log('Grouped Transactions:', groupedTransactions);
 
   return (
     <DashboardContainer>
@@ -231,15 +234,11 @@ const Dashboard = ({ navigation, route }) => {
                     { label: 'Week', value: 'week' },
                   ]}
                   style={{
-                    inputIOS: { color: gray, fontSize: 14, padding: 5 },
-                    inputAndroid: { color: gray, fontSize: 14, padding: 5 },
-                    iconContainer: { top: 5, right: 15 },
+                    inputAndroid: {
+                      color: gray,
+                      padding: 10,
+                    },
                   }}
-                  value={selectedPeriod}
-                  useNativeAndroidPickerStyle={false}
-                  Icon={() => (
-                    <Ionicons name="chevron-down-outline" size={20} color={gray} />
-                  )}
                 />
               </PickerContainer>
             </View>
@@ -251,15 +250,15 @@ const Dashboard = ({ navigation, route }) => {
             ) : transactions.length === 0 ? (
               <GrayText>No transactions for the {selectedPeriod.toLowerCase()}.</GrayText>
             ) : (
-              Object.keys(groupedTransactions).map(date => (
-                <View key={date}>
-                  <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{date}</Text>
-                  {aggregateTransactions(groupedTransactions[date]).map(transaction => (
+              Object.entries(groupedTransactions).map(([period, transactions], index) => (
+                <View key={index}>
+                  <Text style={{ fontWeight: 'bold', marginVertical: 10 }}>{period}</Text>
+                  {aggregateTransactions(transactions).map((transaction, idx) => (
                     <TouchableOpacity key={transaction._id} onPress={() => navigation.navigate('EditTransaction', { transaction })}>
-                      <TransactionCard>
+                      <TransactionCard key={idx}>
                         <TransactionText>{transaction.category}</TransactionText>
-                        <TransactionText style={{ color: transaction.type === 'income' ? 'green' : 'red' }}>
-                          Sh{transaction.amount}
+                        <TransactionText style={{ color: transaction.type === 'expense' ? 'red' : 'green' }}>
+                          Sh{transaction.amount.toFixed(2)}
                         </TransactionText>
                       </TransactionCard>
                       <TransactionSeparator />

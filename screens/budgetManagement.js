@@ -108,13 +108,6 @@ const BudgetManagement = ({ navigation, route }) => {
           <Ionicons name="add-circle-outline" size={24} color={route.name === 'AddBudget' ? Colors.brand : Colors.gray} />
           <NavTextCenter style={{ color: route.name === 'AddBudget' ? Colors.brand : Colors.gray }}>Add</NavTextCenter>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          style={[{ alignItems: 'center' }, route.name === 'Settings' && { borderBottomWidth: 2, borderBottomColor: Colors.brand }]}
-        >
-          <Ionicons name="settings-outline" size={24} color={route.name === 'Settings' ? Colors.brand : Colors.gray} />
-          <NavText style={{ color: route.name === 'Settings' ? Colors.brand : Colors.gray }}>Settings</NavText>
-        </TouchableOpacity>
       </NavBar>
     </StyledContainer>
   );

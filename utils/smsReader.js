@@ -1,12 +1,12 @@
 import SmsAndroid from 'react-native-get-sms-android';
 
-export const readSmsMessages = async ({ box = 'inbox', address }) => {
+const readSmsMessages = async ({ box = 'inbox', address }) => {
   console.log('Reading SMS messages...');
   return new Promise((resolve, reject) => {
     const filter = {
-      box, // 'inbox' or 'sent'
+      box,
       address,
-      read: 0, // 0 for unread SMS, 1 for SMS already read
+      read: 0,
     };
 
     SmsAndroid.list(
@@ -18,7 +18,7 @@ export const readSmsMessages = async ({ box = 'inbox', address }) => {
       (count, smsList) => {
         try {
           const messages = JSON.parse(smsList);
-          console.log(`Found ${count} messages`);
+          console.log(`Found ${count} messages:`, messages);
           resolve(messages);
         } catch (error) {
           console.error('Error parsing SMS list:', error);

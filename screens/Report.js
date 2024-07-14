@@ -201,13 +201,6 @@ const Report = ({ navigation, route }) => {
           <Ionicons name="add-circle-outline" size={24} color={route.name === 'AddTransaction' ? brand : Colors.gray} />
           <NavTextCenter style={{ color: route.name === 'AddTransaction' ? brand : Colors.gray }}>Add</NavTextCenter>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          style={[{ alignItems: 'center' }, route.name === 'Settings' && { borderBottomWidth: 2, borderBottomColor: brand }]}
-        >
-          <Ionicons name="settings-outline" size={24} color={route.name === 'Settings' ? brand : Colors.gray} />
-          <NavText style={{ color: route.name === 'Settings' ? brand : Colors.gray }}>Settings</NavText>
-        </TouchableOpacity>
       </NavBar>
     </DashboardContainer>
   );

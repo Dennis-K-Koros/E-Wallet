@@ -31,8 +31,9 @@ const parseMpesaMessage = (message) => {
     };
 };
 
-export const parseTransactionMessages = (messages) => {
-  return messages
-    .map((message) => parseMpesaMessage(message.body))
-    .filter((transaction) => transaction !== null);
-};
+const parseTransactionMessages = (messages) => {
+    console.log('Parsing messages:', messages);
+    return messages
+      .map((message) => parseMpesaMessage(message.body))
+      .filter((transaction) => transaction !== null);
+  };
