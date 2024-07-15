@@ -47,9 +47,9 @@ export default function App() {
       console.log('Preparing app...');
       await SplashScreen.preventAutoHideAsync();
       await checkLoginCredentials();
-      const smsPermissionGranted = await checkSmsPermission();
-      console.log('SMS permission granted status:', smsPermissionGranted);
-      const notificationPermissionGranted = await requestNotificationPermission();
+      // const smsPermissionGranted = await checkSmsPermission();
+      // console.log('SMS permission granted status:', smsPermissionGranted);
+      // const notificationPermissionGranted = await requestNotificationPermission();
       
       if (smsPermissionGranted) {
         const messages = await readSmsMessages({ box: 'inbox', address: 'MPESA' });

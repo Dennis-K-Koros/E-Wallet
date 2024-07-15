@@ -168,7 +168,7 @@ const Report = ({ navigation, route }) => {
                   absolute
                 />
                 <Text style={{ fontSize: 16, color: tertiary, marginTop: 10 }}>
-                  Total {transactionType}: ${totalAmount}
+                  Total {transactionType}: Ksh{totalAmount}
                 </Text>
               </View>
             )}
@@ -178,7 +178,7 @@ const Report = ({ navigation, route }) => {
               {totalPerCategory?.sort((a, b) => b.totalAmount - a.totalAmount).map((item, index) => (
                 <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', borderBottomWidth: 1, borderBottomColor: Colors[item._id] || primary, paddingVertical: 5 }}>
                   <Text style={{ color: Colors[item._id] || primary }}>{item._id}</Text>
-                  <Text>${item.totalAmount}</Text>
+                  <Text>Ksh{item.totalAmount}</Text>
                 </View>
               ))}
             </View>

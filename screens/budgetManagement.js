@@ -37,7 +37,6 @@ const BudgetManagement = ({ navigation, route }) => {
         } else {
           setBudgets([]);
         }
-        console.log('Fetched budgets:', data);
 
         // Check budgets and notify
         data.forEach(budget => {
@@ -66,8 +65,8 @@ const BudgetManagement = ({ navigation, route }) => {
     <View style={styles.budgetCard}>
       <Text style={styles.budgetCategory}>{item.category}</Text>
       <Text style={styles.budgetDates}>{parseIsoDate(item.startDate)} - {parseIsoDate(item.endDate)}</Text>
-      <Text style={styles.budgetAmount}>Budget: ${item.amount}</Text>
-      <Text style={styles.spentAmount}>Spent: ${item.spentAmount}</Text>
+      <Text style={styles.budgetAmount}>Budget: Ksh{item.amount}</Text>
+      <Text style={styles.spentAmount}>Spent: Ksh{item.spentAmount}</Text>
       <Progress.Bar 
         progress={item.spentAmount / item.amount} 
         width={null}
